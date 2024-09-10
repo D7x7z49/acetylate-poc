@@ -1,8 +1,8 @@
 from __future__ import annotations
 from typing import List, Optional, Annotated
 from dataclasses import dataclass
-from acetylate_poc.schemas.target import Target, NetworkTarget
-from acetylate_poc.schemas.payload import Payload, HttpPayload, TcpPayload
+from acetylate_poc.schemas import Target, NetworkTarget
+from acetylate_poc.schemas import Payload, HttpPayload, TcpPayload
 
 @dataclass
 class Description:
@@ -31,66 +31,3 @@ class POCSchema:
     payload: Annotated[Payload, "The payload used for the POC, which varies based on the protocol and type of data being sent."]
     assertions: Annotated[List[Assertion], "A list of assertions to validate the POC's expected outcomes. Each assertion includes a condition to check and the expected value."]
 
-
-
-
-
-
-if __name__ == "__main__":
-
-    import json
-    from dataclasses import asdict
-
-    metadata = Metadata(
-        authors=["John Doe"],
-        descriptions=[
-            Description(
-                title="Sample POC",
-                content="This is a sample POC.",
-                references=["https://example.com"]
-            )
-        ],
-        cve=["CVE-2023-12345"],
-        tags=["example", "security"]
-    )
-
-    target = Target(
-        type="network",
-        network=NetworkTarget(
-            engine="Shodan",
-            query="apache"
-        )
-    )
-
-    payload = Payload(
-        type="http",
-        http=HttpPayload(
-            data="GET / HTTP/1.1\r\nHost: example.com\r\n\r\n",
-            headers={"User-Agent": "TestAgent"}
-        )
-    )
-
-    assertions = [
-        Assertion(condition="status_code", value="200", message="Expected status code 200.")
-    ]
-
-    poc = POCSchema(
-        version="1.0",
-        metadata=metadata,
-        target=target,
-        payload=payload,
-        assertions=assertions
-    )
-
-    poc_dict = asdict(poc)
-    poc_json = json.dumps(poc_dict, indent=4)
-    print(poc_json)
-
-    poc_dict = json.loads(poc_json)
-    poc_instance = POCSchema(
-        version=poc_dict["version"],
-        metadata=Metadata(**poc_dict["metadata"]),
-        target=Target(**poc_dict["target"]),
-        payload=Payload(**poc_dict["payload"]),
-        assertions=[Assertion(**assertion) for assertion in poc_dict["assertions"]]
-    )
