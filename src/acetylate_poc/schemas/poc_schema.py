@@ -4,9 +4,7 @@ from typing import Annotated, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from acetylate_poc.schemas.payload import (
-    Payload,
-)
+from acetylate_poc.schemas.payload import Payload
 from acetylate_poc.schemas.target import Target
 
 
