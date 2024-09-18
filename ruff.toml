@@ -1,0 +1,38 @@
+exclude = [
+    ".git",
+    ".venv",
+    "dist",
+    "build",
+    "archive",
+    "node_modules",
+    "__pycache__",
+    ".ruff_cache",
+    ".pdm-build",
+]
+
+include = [
+    "pyproject.toml",
+    "src/**/*.py",
+    "tests/**/*.py"
+]
+
+line-length = 120
+indent-width = 4
+
+target-version = "py312"
+
+[lint]
+select = ["E", "F", "B", "C", "S"]
+ignore = ["E203"]
+
+[lint.extend-per-file-ignores]
+"tests/*.py" = ["F401"]
+
+[format]
+
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+docstring-code-format = true
+docstring-code-line-length = "dynamic"

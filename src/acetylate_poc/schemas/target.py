@@ -1,22 +1,61 @@
 from __future__ import annotations
-from typing import Optional, List, Union, Annotated
-from dataclasses import dataclass
 
-@dataclass
-class NetworkTarget:
-    engine: Annotated[str, "The name of the network space search engine used to identify the target, such as Shodan or Censys."]
-    query: Annotated[str, "The search query used with the search engine to locate potential targets or services."]
-    port: Optional[Annotated[int, "Optional port number for the target. If not specified, all relevant ports are considered for the POC."]] = None
-    path: Optional[Annotated[str, "Optional web path to include in the request. If not specified, the target is used without modification."]] = None
+from typing import Annotated, Optional
+
+from pydantic import BaseModel, Field, model_validator
 
 
-@dataclass
-class Target:
-    type: Annotated[str, "Specifies the type of target. 'network' indicates the use of a network space search engine and query to identify the target."]
-    network: Optional[NetworkTarget] = None
+class CTISearchEngineTarget(BaseModel):
+    engine: Annotated[
+        str,
+        Field(
+            ...,
+            title="Cyber Threat Intelligence (CTI) Search Engine",
+            description=("The name of the CTI search engine used to identify the target, " "such as Shodan or Censys."),
+        ),
+    ]
+    query: Annotated[
+        str,
+        Field(
+            ...,
+            title="Search Query",
+            description=("The search query used with the search engine to locate potential targets or services."),
+        ),
+    ]
 
-    def __post_init__(self):
-        if self.type == 'network' and self.network is None:
+
+class Target(BaseModel):
+    type: Annotated[
+        str,
+        Field(
+            ...,
+            title="Target Type",
+            description=(
+                "Specifies the type of target. "
+                "`network` indicates the use of a network space search engine and query to identify the target."
+            ),
+        ),
+    ]
+    network: Annotated[
+        Optional[CTISearchEngineTarget],
+        Field(
+            default=None,
+            title="Network Target",
+            description=(
+                "If the target type is `network`, provide the details of the network space search engine and query."
+            ),
+        ),
+    ]
+
+    @classmethod
+    @model_validator(mode="before")
+    def validate_network(cls, values):
+        target_type = values.get("type")
+        network = values.get("network")
+
+        if target_type == "network" and network is None:
             raise ValueError("When type is 'network', 'network' field must be provided.")
-        if self.type != 'network' and self.network is not None:
+        if target_type != "network" and network is not None:
             raise ValueError("When type is not 'network', 'network' field should be None.")
+
+        return values

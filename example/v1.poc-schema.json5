@@ -1,211 +1,284 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "Proof of Concept (POC) Schema",
-    "type": "object",
-    "properties": {
-      "version": {
-        "type": "string",
-        "description": "Indicates the version of the POC file format. This helps in managing and validating schema compatibility."
-      },
-      "metadata": {
-        "type": "object",
-        "properties": {
-          "authors": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "description": "Name of an individual who contributed to the creation of the POC."
-            },
-            "description": "An array listing the authors of the POC, providing credit to those who developed or documented it."
-          },
-          "descriptions": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "title": {
-                  "type": "string",
-                  "description": "A brief title summarizing the content of the description."
-                },
-                "content": {
-                  "type": "string",
-                  "description": "A detailed narrative explaining the POC, including its purpose, potential impact, and any relevant technical details."
-                },
-                "references": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "format": "uri",
-                    "description": "Links to external resources or documentation that provide additional context or evidence related to the POC."
-                  },
-                  "description": "Optional array of references supporting the description, such as links to reports, articles, or other documentation."
-                }
-              },
-              "required": [
-                "title",
-                "content"
-              ],
-              "additionalProperties": false
-            },
-            "description": "An array of descriptive sections providing context and details about the POC. Each description includes a title and content, with optional references."
-          },
-          "cve": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "description": "A list of Common Vulnerabilities and Exposures (CVE) identifiers related to the POC. These identifiers help in associating the POC with known vulnerabilities."
-            },
-            "description": "Optional array of CVE identifiers that relate the POC to specific known vulnerabilities."
-          },
-          "tags": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "description": "Keywords or labels that categorize the POC, making it easier to search and filter POCs based on their characteristics."
-            },
-            "description": "An array of tags used to categorize and provide searchable attributes for the POC."
-          }
+  "$defs": {
+    "Assertion": {
+      "properties": {
+        "condition": {
+          "description": "The type of condition to validate, such as \"status_code\" or \"response_body_contains\".",
+          "title": "Condition",
+          "type": "string"
         },
-        "required": [
-          "authors",
-          "descriptions",
-          "tags"
-        ],
-        "description": "Metadata providing additional context about the POC, including authorship, descriptive information, related CVEs, and categorization tags.",
-        "additionalProperties": false
-      },
-      "target": {
-        "oneOf": [
-          {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "network"
-                ],
-                "description": "Specifies the type of target. 'network' indicates the use of a network space search engine and query to identify the target."
-              },
-              "engine": {
-                "type": "string",
-                "description": "The name of the network space search engine used to identify the target, such as Shodan or Censys."
-              },
-              "query": {
-                "type": "string",
-                "description": "The search query used with the search engine to locate potential targets or services."
-              },
-              "port": {
-                "type": "integer",
-                "description": "Optional port number for the target. If not specified, all relevant ports are considered for the POC."
-              },
-              "path": {
-                "type": "string",
-                "description": "Optional web path to include in the request. If not specified, the target is used without modification."
-              }
-            },
-            "required": [
-              "type",
-              "engine",
-              "query"
-            ],
-            "additionalProperties": false
-          }
-          // ... Additional target types can be added here
-        ],
-        "description": "Specification of the target for the POC. The structure depends on the type of target, such as network-based search engine queries."
-      },
-      "payload": {
-        "oneOf": [
-          {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "http"
-                ],
-                "description": "The type of payload. 'http' indicates an HTTP request payload."
-              },
-              "data": {
-                "type": "string",
-                "description": "The body of the HTTP request, which can include data or commands to be sent to the target."
-              },
-              "headers": {
-                "type": "object",
-                "propertyNames": {
-                  "type": "string"
-                },
-                "additionalProperties": {
-                  "type": "string"
-                },
-                "description": "Optional HTTP headers to include in the request, providing additional context or configuration for the request."
-              }
-            },
-            "required": [
-              "type",
-              "data"
-            ],
-            "additionalProperties": false
-          },
-          {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "tcp"
-                ],
-                "description": "The type of payload. 'tcp' indicates a TCP packet payload."
-              },
-              "data": {
-                "type": "string",
-                "description": "The actual TCP packet data to be sent to the target, which may include custom payload content."
-              }
-            },
-            "required": [
-              "type",
-              "data"
-            ],
-            "additionalProperties": false
-          }
-          // ... Additional payload types can be added here
-        ],
-        "description": "The payload used for the POC, which varies based on the protocol and type of data being sent."
-      },
-      "assertions": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "condition": {
-              "type": "string",
-              "description": "The type of condition to validate, such as 'status_code' or 'response_body_contains'."
-            },
-            "value": {
-              "type": "string",
-              "description": "The expected result or condition to check for in the POC's response."
-            },
-            "message": {
-              "type": "string",
-              "description": "An optional message to display if the assertion fails, providing context or details about the failure."
-            }
-          },
-          "required": [
-            "condition",
-            "value"
-          ],
-          "additionalProperties": false
+        "value": {
+          "description": "The expected result or condition to check for in the POC's response.",
+          "title": "Value",
+          "type": "string"
         },
-        "minItems": 1,
-        "description": "A list of assertions to validate the POC's expected outcomes. Each assertion includes a condition to check and the expected value."
-      }
+        "message": {
+          "default": null,
+          "description": "An optional message to display if the assertion fails, providing context or details about the failure.",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "condition",
+        "value"
+      ],
+      "title": "Assertion",
+      "type": "object"
     },
-    "required": [
-      "version",
-      "metadata",
-      "target",
-      "payload",
-      "assertions"
-    ],
-    "additionalProperties": false
-  }
+    "Description": {
+      "properties": {
+        "title": {
+          "description": "A brief title summarizing the content of the description.",
+          "title": "Title",
+          "type": "string"
+        },
+        "content": {
+          "description": "A detailed narrative explaining the POC, including its purpose, potential impact, and any relevant technical details.",
+          "title": "Content",
+          "type": "string"
+        },
+        "references": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional array of references supporting the description, such as links to reports, articles, or other documentation.",
+          "title": "References"
+        }
+      },
+      "required": [
+        "title",
+        "content"
+      ],
+      "title": "Description",
+      "type": "object"
+    },
+    "Metadata": {
+      "properties": {
+        "authors": {
+          "description": "An array listing the authors of the POC, providing credit to those who developed or documented it.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Authors",
+          "type": "array"
+        },
+        "descriptions": {
+          "description": "An array of descriptive sections providing context and details about the POC. Each description includes a title and content, with optional references.",
+          "items": {
+            "$ref": "#/$defs/Description"
+          },
+          "title": "Descriptions",
+          "type": "array"
+        },
+        "tags": {
+          "description": "An array of tags used to categorize and provide searchable attributes for the POC.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        },
+        "cve": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional array of CVE identifiers that relate the POC to specific known vulnerabilities.",
+          "title": "CVE"
+        }
+      },
+      "required": [
+        "authors",
+        "descriptions",
+        "tags"
+      ],
+      "title": "Metadata",
+      "type": "object"
+    },
+    "NetworkTarget": {
+      "properties": {
+        "engine": {
+          "description": "The name of the network space search engine used to identify the target, such as Shodan or Censys.",
+          "title": "Search Engine",
+          "type": "string"
+        },
+        "query": {
+          "description": "The search query used with the search engine to locate potential targets or services.",
+          "title": "Search Query",
+          "type": "string"
+        },
+        "port": {
+          "anyOf": [
+            {
+              "default": null,
+              "description": "Optional port number for the target. If not specified, all relevant ports are considered for the POC.",
+              "title": "Port",
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Port"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "default": null,
+              "description": "Optional web path to include in the request. If not specified, the target is used without modification.",
+              "title": "Web Path",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Path"
+        }
+      },
+      "required": [
+        "engine",
+        "query"
+      ],
+      "title": "NetworkTarget",
+      "type": "object"
+    },
+    "Payload": {
+      "properties": {
+        "payload_type": {
+          "description": "The type of payload, which determines the format and content of the payload data.",
+          "title": "Payload Type",
+          "type": "string"
+        },
+        "payload_data": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TcpPayload"
+            },
+            {
+              "$ref": "#/$defs/UdpPayload"
+            },
+            {}
+          ],
+          "description": "The actual payload data, formatted according to the specified payload_type.",
+          "title": "Payload Data"
+        }
+      },
+      "required": [
+        "payload_type",
+        "payload_data"
+      ],
+      "title": "Payload",
+      "type": "object"
+    },
+    "Target": {
+      "properties": {
+        "type": {
+          "description": "Specifies the type of target. `network` indicates the use of a network space search engine and query to identify the target.",
+          "title": "Target Type",
+          "type": "string"
+        },
+        "network": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NetworkTarget"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "Target",
+      "type": "object"
+    },
+    "TcpPayload": {
+      "properties": {
+        "source_port": {
+          "description": "The source port number for the TCP connection.",
+          "title": "Source Port",
+          "type": "integer"
+        },
+        "destination_port": {
+          "description": "The destination port number for the TCP connection.",
+          "title": "Destination Port",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "source_port",
+        "destination_port"
+      ],
+      "title": "TcpPayload",
+      "type": "object"
+    },
+    "UdpPayload": {
+      "properties": {},
+      "title": "UdpPayload",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "version": {
+      "description": "Indicates the version of the POC file format. This helps in managing and validating schema compatibility.",
+      "title": "Version",
+      "type": "string"
+    },
+    "metadata": {
+      "$ref": "#/$defs/Metadata",
+      "description": "Metadata providing additional context about the POC, including authorship, descriptive information, related CVEs, and categorization tags."
+    },
+    "target": {
+      "$ref": "#/$defs/Target",
+      "description": "Specification of the target for the POC. The structure depends on the type of target, such as network-based search engine queries."
+    },
+    "payload": {
+      "$ref": "#/$defs/Payload",
+      "description": "The payload used for the POC, which varies based on the protocol and type of data being sent."
+    },
+    "assertions": {
+      "description": "A list of assertions to validate the POC's expected outcomes. Each assertion includes a condition to check and the expected value.",
+      "items": {
+        "$ref": "#/$defs/Assertion"
+      },
+      "title": "Assertions",
+      "type": "array"
+    }
+  },
+  "required": [
+    "version",
+    "metadata",
+    "target",
+    "payload",
+    "assertions"
+  ],
+  "title": "PoC Schema",
+  "type": "object"
+}
