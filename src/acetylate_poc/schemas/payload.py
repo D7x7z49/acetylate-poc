@@ -1,15 +1,10 @@
 from __future__ import annotations
 
-from typing import Annotated, Any, Dict, Type, Union
+from typing import Annotated, Any, Type
 
-from pydantic import (
-    BaseModel,
-    Field,
-    ValidationError,
-    model_validator,
-)
+from pydantic import BaseModel, Field, ValidationError, model_validator
 
-payload_registry: Dict[str, Type[BaseModel]] = {}
+payload_registry: dict[str, Type[BaseModel]] = {}
 
 
 def register_payload(payload_type: str):
@@ -55,7 +50,7 @@ class Payload(BaseModel):
         ),
     ]
     payload_data: Annotated[
-        Union[TcpPayload, UdpPayload, Any],
+        TcpPayload | UdpPayload | Any,
         Field(
             ...,
             title="Payload Data",

@@ -1,10 +1,21 @@
 from __future__ import annotations
 
-from typing import Annotated, Optional
+from typing import Annotated, Any, Type
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, ValidationError, model_validator
+
+target_registry: dict[str, Type[BaseModel]] = {}
 
 
+def register_target(target_type: str):
+    def wrapper(cls: Type[BaseModel]):
+        target_registry[target_type] = cls
+        return cls
+
+    return wrapper
+
+
+@register_target("network")
 class CTISearchEngineTarget(BaseModel):
     engine: Annotated[
         str,
@@ -36,26 +47,34 @@ class Target(BaseModel):
             ),
         ),
     ]
-    network: Annotated[
-        Optional[CTISearchEngineTarget],
+    target_data: Annotated[
+        CTISearchEngineTarget | Any,
         Field(
-            default=None,
-            title="Network Target",
+            ...,
+            title="Target Data",
             description=(
-                "If the target type is `network`, provide the details of the network space search engine and query."
+                "The details of the target data, formatted according to the target type."
             ),
         ),
     ]
 
     @classmethod
     @model_validator(mode="before")
-    def validate_network(cls, values):
+    def validate_target_data(cls, values):
         target_type = values.get("type")
-        network = values.get("network")
+        target_data = values.get("target_data")
 
-        if target_type == "network" and network is None:
-            raise ValueError("When type is 'network', 'network' field must be provided.")
-        if target_type != "network" and network is not None:
-            raise ValueError("When type is not 'network', 'network' field should be None.")
+        if target_type in target_registry:
+            expected_model = target_registry[target_type]
+            if target_data is not None:
+                try:
+                    validated_data = expected_model(**target_data)
+                    values["target_data"] = validated_data
+                except ValidationError as e:
+                    raise ValueError(f"Invalid data for {target_type}: {e}") from e
+            else:
+                raise ValueError(f"target_data is required for {target_type}")
+        else:
+            raise ValueError(f"Unknown target_type: {target_type}")
 
         return values
