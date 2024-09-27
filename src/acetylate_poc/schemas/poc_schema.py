@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from typing import Annotated, Optional
+from typing import Annotated, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from acetylate_poc.schemas.payload import Payload
-from acetylate_poc.schemas.target import Target
+from acetylate_poc.schemas.payload import HttpPayload, TcpPayload, UdpPayload
+from acetylate_poc.schemas.target import CTISearchEngineTarget
 
 
 class Description(BaseModel):
@@ -50,6 +50,7 @@ class Metadata(BaseModel):
             description=(
                 "An array listing the authors of the POC, " "providing credit to those who developed or documented it."
             ),
+            min_length=1,
         ),
     ]
     descriptions: Annotated[
@@ -61,6 +62,7 @@ class Metadata(BaseModel):
                 "An array of descriptive sections providing context and details about the POC. "
                 "Each description includes a title and content, with optional references."
             ),
+            min_length=1,
         ),
     ]
     tags: Annotated[
@@ -113,7 +115,7 @@ class Assertion(BaseModel):
 
 class PocSchema(BaseModel):
     version: Annotated[
-        str,
+        Literal["1.0"],
         Field(
             ...,
             title="Version",
@@ -135,7 +137,7 @@ class PocSchema(BaseModel):
         ),
     ]
     target: Annotated[
-        Target,
+        CTISearchEngineTarget,
         Field(
             ...,
             title="Target",
@@ -144,16 +146,18 @@ class PocSchema(BaseModel):
                 "The structure depends on the type of target, "
                 "such as network-based search engine queries."
             ),
+            discriminator="target_type",
         ),
     ]
     payload: Annotated[
-        Payload,
+        TcpPayload | UdpPayload | HttpPayload,
         Field(
             ...,
             title="Payload",
             description=(
                 "The payload used for the POC, which varies based on the protocol and type of data being sent."
             ),
+            discriminator="payload_type",
         ),
     ]
     assertions: Annotated[
@@ -165,6 +169,7 @@ class PocSchema(BaseModel):
                 "A list of assertions to validate the POC's expected outcomes. "
                 "Each assertion includes a condition to check and the expected value."
             ),
+            min_length=1,
         ),
     ]
 
@@ -174,6 +179,7 @@ class PocSchema(BaseModel):
 if __name__ == "__main__":
     import json
 
-    PocSchema.model_json_schema()
+    schema = PocSchema.model_json_schema()
 
-    print(json.dumps(PocSchema.model_json_schema(), indent=2))
+    with open("example\\v1.poc-schema.json5", "w") as json_file:
+        json.dump(schema, json_file, indent=2)

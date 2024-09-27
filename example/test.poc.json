@@ -1,0 +1,29 @@
+{
+    "version": "xxx",
+    "metadata": {
+        "authors": [],
+        "descriptions": [
+            {
+                "title": "",
+                "content": ""
+            }
+        ],
+        "tags": []
+    },
+    "target":{
+        "target_type": "network",
+        "engine": "",
+        "query": ""
+        
+    },
+    "payload":{
+        "payload_type": "http",
+        "method": ""
+    },
+    "assertions": [
+        {
+            "value": "",
+            "condition": ""
+        }
+    ]
+}

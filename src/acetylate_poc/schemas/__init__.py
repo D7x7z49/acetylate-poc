@@ -2,23 +2,18 @@
 ss
 """
 
-from acetylate_poc.schemas.payload import (
-    Payload,
-    TcpPayload,
-    UdpPayload,
-    register_payload,
-)
+from acetylate_poc.schemas.payload import HttpPayload, TcpPayload, UdpPayload
 from acetylate_poc.schemas.poc_schema import Description, Metadata, PocSchema
-from acetylate_poc.schemas.target import CTISearchEngineTarget, Target
+from acetylate_poc.schemas.target import CTISearchEngineTarget
 
 __all__ = [
     "Description",
     "Metadata",
     "PocSchema",
-    "Payload",
+    "BasePayload",
     "TcpPayload",
     "UdpPayload",
-    "Target",
+    "HttpPayload",
+    "BaseTarget",
     "CTISearchEngineTarget",
-    "register_payload",
 ]

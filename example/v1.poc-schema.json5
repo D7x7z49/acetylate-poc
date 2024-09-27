@@ -26,6 +26,36 @@
       "title": "Assertion",
       "type": "object"
     },
+    "CTISearchEngineTarget": {
+      "properties": {
+        "target_type": {
+          "description": "The type of target, such as a network space or specific IP address.",
+          "enum": [
+            "network",
+            "CTI SearchEngine"
+          ],
+          "title": "Target Type",
+          "type": "string"
+        },
+        "engine": {
+          "description": "The name of the CTI search engine used to identify the target, such as Shodan or Censys.",
+          "title": "Cyber Threat Intelligence (CTI) Search Engine",
+          "type": "string"
+        },
+        "query": {
+          "description": "The search query used with the search engine to locate potential targets or services.",
+          "title": "Search Query",
+          "type": "string"
+        }
+      },
+      "required": [
+        "target_type",
+        "engine",
+        "query"
+      ],
+      "title": "CTISearchEngineTarget",
+      "type": "object"
+    },
     "Description": {
       "properties": {
         "title": {
@@ -62,6 +92,30 @@
       "title": "Description",
       "type": "object"
     },
+    "HttpPayload": {
+      "properties": {
+        "payload_type": {
+          "const": "http",
+          "description": "The type of payload, which determines the format and content of the payload data.",
+          "enum": [
+            "http"
+          ],
+          "title": "Payload Type",
+          "type": "string"
+        },
+        "method": {
+          "description": "The HTTP method to use for the request.",
+          "title": "HTTP Method",
+          "type": "string"
+        }
+      },
+      "required": [
+        "payload_type",
+        "method"
+      ],
+      "title": "HttpPayload",
+      "type": "object"
+    },
     "Metadata": {
       "properties": {
         "authors": {
@@ -69,6 +123,7 @@
           "items": {
             "type": "string"
           },
+          "minItems": 1,
           "title": "Authors",
           "type": "array"
         },
@@ -77,6 +132,7 @@
           "items": {
             "$ref": "#/$defs/Description"
           },
+          "minItems": 1,
           "title": "Descriptions",
           "type": "array"
         },
@@ -116,131 +172,39 @@
       "title": "Metadata",
       "type": "object"
     },
-    "NetworkTarget": {
-      "properties": {
-        "engine": {
-          "description": "The name of the network space search engine used to identify the target, such as Shodan or Censys.",
-          "title": "Search Engine",
-          "type": "string"
-        },
-        "query": {
-          "description": "The search query used with the search engine to locate potential targets or services.",
-          "title": "Search Query",
-          "type": "string"
-        },
-        "port": {
-          "anyOf": [
-            {
-              "default": null,
-              "description": "Optional port number for the target. If not specified, all relevant ports are considered for the POC.",
-              "title": "Port",
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Port"
-        },
-        "path": {
-          "anyOf": [
-            {
-              "default": null,
-              "description": "Optional web path to include in the request. If not specified, the target is used without modification.",
-              "title": "Web Path",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Path"
-        }
-      },
-      "required": [
-        "engine",
-        "query"
-      ],
-      "title": "NetworkTarget",
-      "type": "object"
-    },
-    "Payload": {
-      "properties": {
-        "payload_type": {
-          "description": "The type of payload, which determines the format and content of the payload data.",
-          "title": "Payload Type",
-          "type": "string"
-        },
-        "payload_data": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/TcpPayload"
-            },
-            {
-              "$ref": "#/$defs/UdpPayload"
-            },
-            {}
-          ],
-          "description": "The actual payload data, formatted according to the specified payload_type.",
-          "title": "Payload Data"
-        }
-      },
-      "required": [
-        "payload_type",
-        "payload_data"
-      ],
-      "title": "Payload",
-      "type": "object"
-    },
-    "Target": {
-      "properties": {
-        "type": {
-          "description": "Specifies the type of target. `network` indicates the use of a network space search engine and query to identify the target.",
-          "title": "Target Type",
-          "type": "string"
-        },
-        "network": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/NetworkTarget"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null
-        }
-      },
-      "required": [
-        "type"
-      ],
-      "title": "Target",
-      "type": "object"
-    },
     "TcpPayload": {
       "properties": {
-        "source_port": {
-          "description": "The source port number for the TCP connection.",
-          "title": "Source Port",
-          "type": "integer"
-        },
-        "destination_port": {
-          "description": "The destination port number for the TCP connection.",
-          "title": "Destination Port",
-          "type": "integer"
+        "payload_type": {
+          "const": "tcp",
+          "description": "The type of payload, which determines the format and content of the payload data.",
+          "enum": [
+            "tcp"
+          ],
+          "title": "Payload Type",
+          "type": "string"
         }
       },
       "required": [
-        "source_port",
-        "destination_port"
+        "payload_type"
       ],
       "title": "TcpPayload",
       "type": "object"
     },
     "UdpPayload": {
-      "properties": {},
+      "properties": {
+        "payload_type": {
+          "const": "udp",
+          "description": "The type of payload, which determines the format and content of the payload data.",
+          "enum": [
+            "udp"
+          ],
+          "title": "Payload Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "payload_type"
+      ],
       "title": "UdpPayload",
       "type": "object"
     }
@@ -256,18 +220,50 @@
       "description": "Metadata providing additional context about the POC, including authorship, descriptive information, related CVEs, and categorization tags."
     },
     "target": {
-      "$ref": "#/$defs/Target",
-      "description": "Specification of the target for the POC. The structure depends on the type of target, such as network-based search engine queries."
+      "description": "Specification of the target for the POC. The structure depends on the type of target, such as network-based search engine queries.",
+      "discriminator": {
+        "mapping": {
+          "CTI SearchEngine": "#/$defs/CTISearchEngineTarget",
+          "network": "#/$defs/CTISearchEngineTarget"
+        },
+        "propertyName": "target_type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/CTISearchEngineTarget"
+        }
+      ],
+      "title": "Target"
     },
     "payload": {
-      "$ref": "#/$defs/Payload",
-      "description": "The payload used for the POC, which varies based on the protocol and type of data being sent."
+      "description": "The payload used for the POC, which varies based on the protocol and type of data being sent.",
+      "discriminator": {
+        "mapping": {
+          "http": "#/$defs/HttpPayload",
+          "tcp": "#/$defs/TcpPayload",
+          "udp": "#/$defs/UdpPayload"
+        },
+        "propertyName": "payload_type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/TcpPayload"
+        },
+        {
+          "$ref": "#/$defs/UdpPayload"
+        },
+        {
+          "$ref": "#/$defs/HttpPayload"
+        }
+      ],
+      "title": "Payload"
     },
     "assertions": {
       "description": "A list of assertions to validate the POC's expected outcomes. Each assertion includes a condition to check and the expected value.",
       "items": {
         "$ref": "#/$defs/Assertion"
       },
+      "minItems": 1,
       "title": "Assertions",
       "type": "array"
     }
