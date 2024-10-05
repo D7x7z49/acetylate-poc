@@ -29,14 +29,14 @@ def separate_file_iterator(inputfile, outputfile, regex_pattern):
                 outfile.write(f"{target}\n")
 
 
-def extract_file_iterator(file_path, filter_keys):
+def extract_file_iterator(file_path, filter_keys, encoding="utf-8"):
     path = Path(file_path)
     file_extension = path.suffix
 
     supported_extensions = ['.ndjson', '.json', '.csv']
 
     if file_extension in ['.ndjson', '.json']:
-        with open(file_path, 'r', encoding='utf-8') as file:
+        with open(file_path, 'r', encoding=encoding) as file:
             for line in file:
                 try:
                     data = json.loads(line)
@@ -45,7 +45,7 @@ def extract_file_iterator(file_path, filter_keys):
                     continue
 
     elif file_extension == '.csv':
-        with open(file_path, 'r', encoding='utf-8') as file:
+        with open(file_path, 'r', encoding=encoding) as file:
             reader = csv.DictReader(file)
             for row in reader:
                 yield {k: row[k] for k in filter_keys if k in row}
