@@ -1,3 +1,6 @@
+import base64
+import time
+from functools import wraps
 from typing import Any, Callable, Dict, Type
 
 
@@ -38,6 +41,30 @@ class Registry:
 
     def __repr__(self) -> str:
         return f"Registry({self._registry})"
+    
+
+class GeneralToolsBox:
+
+    @staticmethod
+    def timeit(func):
+        @wraps(func)
+        async def wrapper(*args, **kwargs):
+            start_time = time.monotonic()
+            result = await func(*args, **kwargs)
+            end_time = time.monotonic()
+            print(f"Execution time: {end_time - start_time:.2f} seconds")
+            return result
+        return wrapper
+    
+    @staticmethod
+    def base64_str(s: str | bytes, encode: str = "utf-8") -> str:
+        
+        if isinstance(s, bytes):
+            return base64.b64encode(s).decode(encode)
+        elif isinstance(s, str):
+            return base64.b64encode(s.encode(encode)).decode(encode)
+        else:
+            raise TypeError("Input must be a string or bytes")
 
 
 if __name__ == "__main__":
