@@ -4,7 +4,9 @@ import re
 import secrets
 import unittest
 
+from acetylate_poc.schemas.http_request import RequestsSchema
 from acetylate_poc.utils.fetch import extract_file_iterator, separate_file_iterator
+from acetylate_poc.utils.requester import AbstractRequester, api_request_handler, api_request_register
 
 
 def delete_file(file_path):
@@ -86,3 +88,34 @@ class TestExtractFileIterator(unittest.TestCase):
         results = list(extract_file_iterator(self.FILE_CSV, filter_keys))
         expected = [{'host': '192.168.1.1'}, {'host': '192.168.1.2'}]
         self.assertEqual(results, expected)
+
+
+class TestRequester(unittest.TestCase):
+
+    def setUp(self):
+        self.url = "https://example.com"
+        self.headers = {"User-Agent": "Mozilla/5.0"}
+        self.data = {"key": "value"}
+
+    def test_custom_requester(self):
+        # Test custom requester implementation
+
+        @api_request_register("custom_requester")
+        class CustomRequester(AbstractRequester):
+            def send_request(self, **kwargs):
+                method = kwargs.pop('method', None)
+                url = kwargs.pop('url', None)
+                headers = kwargs.pop('headers', None)
+                params = kwargs.pop('params', None)
+
+                print(f"Sending {method} request to {url} with headers {headers} and params {params}.")
+                return {"status_code": 200, "content": "Hello, World!"}
+            
+        @api_request_handler("custom_requester")
+        def make_request(method, url, headers, params):
+            return RequestsSchema(method=method, url=url, headers=headers, params=params)
+
+        response = make_request("GET", self.url, headers=self.headers, params=self.data)
+
+        self.assertEqual(response["status_code"], 200)
+        self.assertEqual(response["content"], "Hello, World!")
