@@ -61,7 +61,7 @@ class HttpClientRequester(AbstractRequester):
 def api_request_handler(requester_type="requests"):
     def decorator(func):
         @wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args, **kwargs) -> dict:
             requester: AbstractRequester = _requester_registry.dispatch(requester_type)
             http_args: dict | BaseModel = func(*args, **kwargs)
             if isinstance(http_args, BaseModel):

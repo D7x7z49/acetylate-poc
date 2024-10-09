@@ -1,7 +1,9 @@
 import base64
+import re
 import time
 from functools import wraps
 from typing import Any, Callable, Dict, Type
+from urllib.parse import ParseResult, urlparse, urlunparse
 
 
 class Registry:
@@ -65,6 +67,20 @@ class GeneralToolsBox:
             return base64.b64encode(s.encode(encode)).decode(encode)
         else:
             raise TypeError("Input must be a string or bytes")
+        
+    @staticmethod
+    def fix_url(host, protocol, ip, domain, port, web_path):
+        parsed_host: ParseResult = urlparse(host)
+        
+        protocol = parsed_host.scheme if parsed_host.scheme else protocol
+
+        netloc_pattern = r'^(?:(\w[\w-]*\.)+[a-z]{2,}|(\d{1,3}\.){3}\d{1,3})(?::\d+)?$'
+        if parsed_host.netloc and re.match(netloc_pattern, parsed_host.netloc):
+            netloc = parsed_host.netloc
+        else:
+            netloc = f"{ domain if domain else ip }:{port}"
+        
+        return urlunparse((protocol, netloc, web_path, '', '', ''))
 
 
 if __name__ == "__main__":
