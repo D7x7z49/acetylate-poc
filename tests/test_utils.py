@@ -112,7 +112,7 @@ class TestRequester(unittest.TestCase):
                 return {"status_code": 200, "content": "Hello, World!"}
             
         @api_request_handler("custom_requester")
-        def make_request(method, url, headers, params):
+        def make_request(method, url, headers, params) -> dict:
             return RequestsSchema(method=method, url=url, headers=headers, params=params)
 
         response = make_request("GET", self.url, headers=self.headers, params=self.data)

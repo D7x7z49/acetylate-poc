@@ -6,7 +6,7 @@ import unittest
 
 from dotenv import load_dotenv
 
-from acetylate_poc.apis.fofa_api import FofaAPI
+from acetylate_poc.targets.api.fofa_api import FofaAPI
 
 load_dotenv()
 
