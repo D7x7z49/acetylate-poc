@@ -69,7 +69,7 @@ class GeneralToolsBox:
             raise TypeError("Input must be a string or bytes")
         
     @staticmethod
-    def fix_url(host, protocol, ip, domain, port, web_path):
+    def fix_base_url(host, protocol, ip, domain, port):
         parsed_host: ParseResult = urlparse(host)
         
         protocol = parsed_host.scheme if parsed_host.scheme else protocol
@@ -80,7 +80,7 @@ class GeneralToolsBox:
         else:
             netloc = f"{ domain if domain else ip }:{port}"
         
-        return urlunparse((protocol, netloc, web_path, '', '', ''))
+        return urlunparse((protocol, netloc, '', '', '', ''))
 
 
 if __name__ == "__main__":
