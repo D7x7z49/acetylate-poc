@@ -5,7 +5,7 @@
 groups = ["default", "dev", "lint"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:582100e6e2f318e643e3b2ea675ebbbb60320cdd0c951a28089bbb1f929356f8"
+content_hash = "sha256:8cb0e29a9e49d9254bf146b7bd816c3a00c654f098b2f77bc14b16499ceda234"
 
 [[metadata.targets]]
 requires_python = ">=3.12"
@@ -76,6 +76,16 @@ dependencies = [
 files = [
     {file = "asttokens-2.4.1-py2.py3-none-any.whl", hash = "sha256:051ed49c3dcae8913ea7cd08e46a606dba30b79993209636c4875bc1d637bc24"},
     {file = "asttokens-2.4.1.tar.gz", hash = "sha256:b03869718ba9a6eb027e134bfdf69f38a236d681c83c160d510768af11254ba0"},
+]
+
+[[package]]
+name = "cached-property"
+version = "1.5.2"
+summary = "A decorator for caching properties in classes."
+groups = ["default"]
+files = [
+    {file = "cached-property-1.5.2.tar.gz", hash = "sha256:9fa5755838eecbb2d234c3aa390bd80fbd3ac6b6869109bfc1b499f7bd89a130"},
+    {file = "cached_property-1.5.2-py2.py3-none-any.whl", hash = "sha256:df4f613cf7ad9a588cc381aaf4a512d26265ecebd5eb9e1ba12f1319eb85a6a0"},
 ]
 
 [[package]]
@@ -255,6 +265,21 @@ dependencies = [
 files = [
     {file = "h11-0.14.0-py3-none-any.whl", hash = "sha256:e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761"},
     {file = "h11-0.14.0.tar.gz", hash = "sha256:8f19fbbe99e72420ff35c00b27a34cb9937e902a8b810e2c88300c6f0a3b699d"},
+]
+
+[[package]]
+name = "haralyzer"
+version = "2.4.0"
+requires_python = ">=3.6"
+summary = "A python framework for getting useful stuff out of HAR files"
+groups = ["default"]
+dependencies = [
+    "cached-property",
+    "python-dateutil",
+]
+files = [
+    {file = "haralyzer-2.4.0-py3-none-any.whl", hash = "sha256:b66d2bf873fc70d0288def5db8885ee005024f088cf745ef918beadafd2d7df2"},
+    {file = "haralyzer-2.4.0.tar.gz", hash = "sha256:1154162a328a5226bc6d1d9626be19536ae049dd44b0a160081054f4808326a5"},
 ]
 
 [[package]]
