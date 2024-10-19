@@ -4,9 +4,8 @@ import re
 import secrets
 import unittest
 
-from acetylate_poc.schemas.http_request import RequestsSchema
+from acetylate_poc.targets.api_box import AbstractRequester, BaseAPI, api_request_handler, api_request_register
 from acetylate_poc.utils.fetch import extract_file_iterator, separate_file_iterator
-from acetylate_poc.utils.requester import AbstractRequester, api_request_handler, api_request_register
 
 
 def delete_file(file_path):
@@ -113,7 +112,7 @@ class TestRequester(unittest.TestCase):
             
         @api_request_handler("custom_requester")
         def make_request(method, url, headers, params) -> dict:
-            return RequestsSchema(method=method, url=url, headers=headers, params=params)
+            return BaseAPI(method=method, url=url, headers=headers, params=params)
 
         response = make_request("GET", self.url, headers=self.headers, params=self.data)
 

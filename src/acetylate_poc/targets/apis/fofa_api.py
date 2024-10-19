@@ -13,7 +13,7 @@ Usage:
 
 from acetylate_poc.targets.api_box import BaseAPI, api_request_handler
 from acetylate_poc.utils.manage import GeneralToolsBox
-from acetylate_poc.utils.validators import validate_api_key, validate_api_version, validate_base_url
+from acetylate_poc.utils.validators import validate_api_key, validate_api_version
 
 str_to_base64 = GeneralToolsBox.base64_str
 
@@ -28,33 +28,51 @@ class FofaAPI:
         api_version (str): The version of the API being used.
     """
 
-    VALID_API_VERSIONS = {'v1'}
+    base_url: str = r"https://fofa.info"
+    VALID_API_VERSIONS = {"v1"}
 
-    def __init__(self, api_key: str, base_url: str = 'https://fofa.info', api_version: str = 'v1') -> None:
+    def __init__(self, api_key: str, api_version: str = "v1", requester: str = "requests") -> None:
         """
         Initialize the FofaAPI instance.
 
         Parameters:
             api_key (str): The API key for authenticating requests.
-            base_url (str): The base URL of the Fofa API (default is 'https://fofa.info').
-            api_version (str): The version of the API to use (default is 'v1').
+            api_version (str): The version of the API to use (default is "v1").
+            requester (str): The HTTP library to use for requests (default is "requests").
 
         Raises:
-            ValueError: If the API key, base URL, or API version is invalid.
+            ValueError: If the API key or API version is invalid.
         """
-        self.base_url = validate_base_url(base_url)
+        
         self.api_key = validate_api_key(api_key)
         self.api_version = validate_api_version(api_version, self.VALID_API_VERSIONS)
+        self.requester = requester
 
-    @api_request_handler()
+    def send(self, method, url, params) -> dict:
+        """
+        Send an HTTP request to the Fofa API.
+
+        Parameters:
+            method (str): The HTTP method to use (e.g., "GET").
+            url (str): The full URL of the API endpoint.
+            params (dict): The parameters to include in the request.
+
+        Returns:
+            dict: The response from the Fofa API.
+        """
+        @api_request_handler(self.requester)
+        def func():
+            return BaseAPI(method=method, url=url, params=params)
+        return func()
+
     def search_all(self, query: str, page: int, size: int, fields: list[str] = None, full: bool = False) -> dict:
         """
         Perform a search query on all data.
 
         Parameters:
             query (str): The search query to be executed.
-            page (int): The page number for pagination.
-            size (int): The number of results to return per page.
+            page (int): The page number for pagination (0-indexed).
+            size (int): The number of results to return per page (max 1000).
             fields (list[str], optional): The specific fields to return (default is predefined fields).
             full (bool, optional): Whether to retrieve all data (default is False).
 
@@ -82,9 +100,8 @@ class FofaAPI:
             "full": full
         }
 
-        return BaseAPI(method=method, url=url, params=params)
+        return self.send(method=method, url=url, params=params)
 
-    @api_request_handler()
     def search_stats(self, query: str, fields: list[str] = None) -> dict:
         """
         Retrieve statistics based on a search query.
@@ -112,9 +129,8 @@ class FofaAPI:
             "fields": fields
         }
 
-        return BaseAPI(method=method, url=url, params=params)
+        return self.send(method=method, url=url, params=params)
 
-    @api_request_handler()
     def host_aggregation(self, host: str, detail: bool = False) -> dict:
         """
         Retrieve aggregation information for a specific host.
@@ -134,9 +150,8 @@ class FofaAPI:
             "detail": detail
         }
 
-        return BaseAPI(method=method, url=url, params=params)
+        return self.send(method=method, url=url, params=params)
 
-    @api_request_handler()
     def account_info(self) -> dict:
         """
         Retrieve current account information.
@@ -151,9 +166,8 @@ class FofaAPI:
             "key": self.api_key
         }
 
-        return BaseAPI(method=method, url=url, params=params)
+        return self.send(method=method, url=url, params=params)
 
-    @api_request_handler()
     def search_next(
         self, query: str, fields: list[str] = None, size: int = 100, next_id: str = None, full: bool = False
     ) -> dict:
@@ -191,4 +205,4 @@ class FofaAPI:
             "full": full
         }
 
-        return BaseAPI(method=method, url=url, params=params)
+        return self.send(method=method, url=url, params=params)
