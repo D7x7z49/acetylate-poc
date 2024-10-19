@@ -11,9 +11,8 @@ Usage:
     Initialize the FofaAPI class with a valid API key, and then call the desired methods to interact with the API.
 """
 
-from acetylate_poc.schemas.http_request import RequestsSchema
+from acetylate_poc.targets.api_box import BaseAPI, api_request_handler
 from acetylate_poc.utils.manage import GeneralToolsBox
-from acetylate_poc.utils.requester import api_request_handler
 from acetylate_poc.utils.validators import validate_api_key, validate_api_version, validate_base_url
 
 str_to_base64 = GeneralToolsBox.base64_str
@@ -83,7 +82,7 @@ class FofaAPI:
             "full": full
         }
 
-        return RequestsSchema(method=method, url=url, params=params)
+        return BaseAPI(method=method, url=url, params=params)
 
     @api_request_handler()
     def search_stats(self, query: str, fields: list[str] = None) -> dict:
@@ -113,7 +112,7 @@ class FofaAPI:
             "fields": fields
         }
 
-        return RequestsSchema(method=method, url=url, params=params)
+        return BaseAPI(method=method, url=url, params=params)
 
     @api_request_handler()
     def host_aggregation(self, host: str, detail: bool = False) -> dict:
@@ -135,7 +134,7 @@ class FofaAPI:
             "detail": detail
         }
 
-        return RequestsSchema(method=method, url=url, params=params)
+        return BaseAPI(method=method, url=url, params=params)
 
     @api_request_handler()
     def account_info(self) -> dict:
@@ -152,7 +151,7 @@ class FofaAPI:
             "key": self.api_key
         }
 
-        return RequestsSchema(method=method, url=url, params=params)
+        return BaseAPI(method=method, url=url, params=params)
 
     @api_request_handler()
     def search_next(
@@ -192,4 +191,4 @@ class FofaAPI:
             "full": full
         }
 
-        return RequestsSchema(method=method, url=url, params=params)
+        return BaseAPI(method=method, url=url, params=params)
