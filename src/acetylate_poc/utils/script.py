@@ -20,16 +20,16 @@ def add_argument_to_parser(parser, arg_name, option_details, is_required=False):
 
     long_name = f"--{arg_name}"
     short_name = f"-{option_details.short_name}" if option_details.short_name else None
- 
+
     # Prepare keyword arguments for the argument
-    kwargs = {'help': option_details.arg_help}
+    kwargs = {"help": option_details.arg_help}
     match option_details.arg_type:
         case "str":
-            kwargs['type'] = str  # Set type to string
+            kwargs["type"] = str  # Set type to string
         case "bool":
-            kwargs['action'] = 'store_true'  # Boolean flag behavior
+            kwargs["action"] = "store_true"  # Boolean flag behavior
     if is_required:
-        kwargs['required'] = True  # Mark as required if necessary
+        kwargs["required"] = True  # Mark as required if necessary
 
     # Add the argument to the parser with or without the short name
     if short_name:
@@ -88,27 +88,11 @@ if __name__ == "__main__":
         "description": "This is an example command-line interface for demonstration.",
         "required": ["input", "output"],
         "options": {
-            "input": {
-                "short_name": "i",
-                "arg_help": "Input file path",
-                "arg_type": "str"
-            },
-            "output": {
-                "short_name": "o",
-                "arg_help": "Output file path",
-                "arg_type": "str"
-            },
-            "verbose": {
-                "short_name": "v",
-                "arg_help": "Enable verbose mode",
-                "arg_type": "bool"
-            },
-            "overwrite": {
-                "short_name": None,
-                "arg_help": "Overwrite existing files",
-                "arg_type": "bool"
-            }
-        }
+            "input": {"short_name": "i", "arg_help": "Input file path", "arg_type": "str"},
+            "output": {"short_name": "o", "arg_help": "Output file path", "arg_type": "str"},
+            "verbose": {"short_name": "v", "arg_help": "Enable verbose mode", "arg_type": "bool"},
+            "overwrite": {"short_name": None, "arg_help": "Overwrite existing files", "arg_type": "bool"},
+        },
     }
 
     parser = build_argparse(config_data)

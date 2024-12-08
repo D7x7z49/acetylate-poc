@@ -17,22 +17,20 @@ class ArgOptionDetails(BaseModel):
         arg_help (str):
             A brief explanation of what the argument does.
     """
-    
-    short_name: Annotated[Optional[str], Field(
-        None,
-        title="Short Name",
-        description="The abbreviated name for the argument, typically a single character."
-    )]
-    arg_type: Annotated[Literal["str", "bool"], Field(
-        None,
-        title="Argument Type",
-        description="The type of argument, which can be a string or a number."
-    )] = "str"
-    arg_help: Annotated[str, Field(
-        ...,
-        title="Argument Help",
-        description="A brief explanation of what the argument does."
-    )]
+
+    short_name: Annotated[
+        Optional[str],
+        Field(
+            None, title="Short Name", description="The abbreviated name for the argument, typically a single character."
+        ),
+    ]
+    arg_type: Annotated[
+        Literal["str", "bool"],
+        Field(None, title="Argument Type", description="The type of argument, which can be a string or a number."),
+    ] = "str"
+    arg_help: Annotated[
+        str, Field(..., title="Argument Help", description="A brief explanation of what the argument does.")
+    ]
 
 
 class CommandArgsSchema(BaseModel):
@@ -40,7 +38,7 @@ class CommandArgsSchema(BaseModel):
     Defines the schema for command-line arguments for a specific command.
 
     Attributes:
-        description (str): 
+        description (str):
             A concise overview of the command's purpose and functionality.
         required (list[str | list[str]]):
             A list of arguments that must be provided when invoking the command.
@@ -50,11 +48,10 @@ class CommandArgsSchema(BaseModel):
             with argument names as keys and their details (short form and help) as values.
     """
 
-    description: Annotated[str, Field(
-        ...,
-        title="Description",
-        description="A concise overview of the command's purpose and functionality."
-    )]
+    description: Annotated[
+        str,
+        Field(..., title="Description", description="A concise overview of the command's purpose and functionality."),
+    ]
     required: Annotated[
         list[str | list[str]],
         Field(
@@ -63,10 +60,10 @@ class CommandArgsSchema(BaseModel):
             description=(
                 "A list of arguments that must be provided when invoking the command. "
                 "Each item can be a string or a list of mutually exclusive options."
-            )
+            ),
         ),
     ]
-    options: Annotated[ 
+    options: Annotated[
         Dict[str, ArgOptionDetails],
         Field(
             ...,
@@ -74,11 +71,11 @@ class CommandArgsSchema(BaseModel):
             description=(
                 "A dictionary of optional arguments available for the command, "
                 "with argument names as keys and their details (short form and help) as values."
-            )
+            ),
         ),
     ]
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def validate_required(self) -> CommandArgsSchema:
         """
         Validates that all required arguments are defined in the options.

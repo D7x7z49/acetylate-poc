@@ -18,5 +18,5 @@ __all__ = [
     "BaseTarget",
     "CTISearchEngineTarget",
     "ArgOptionDetails",
-    "CommandArgsSchema"
+    "CommandArgsSchema",
 ]

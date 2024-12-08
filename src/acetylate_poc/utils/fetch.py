@@ -10,7 +10,6 @@ Functions:
 - <function_name_3>: Brief description of what this function does.
 """
 
-
 import csv
 import json
 import re
@@ -33,10 +32,10 @@ def extract_file_iterator(file_path, filter_keys, encoding="utf-8"):
     path = Path(file_path)
     file_extension = path.suffix
 
-    supported_extensions = ['.ndjson', '.json', '.csv']
+    supported_extensions = [".ndjson", ".json", ".csv"]
 
-    if file_extension in ['.ndjson', '.json']:
-        with open(file_path, 'r', encoding=encoding) as file:
+    if file_extension in [".ndjson", ".json"]:
+        with open(file_path, "r", encoding=encoding) as file:
             for line in file:
                 try:
                     data = json.loads(line)
@@ -44,8 +43,8 @@ def extract_file_iterator(file_path, filter_keys, encoding="utf-8"):
                 except json.JSONDecodeError:
                     continue
 
-    elif file_extension == '.csv':
-        with open(file_path, 'r', encoding=encoding) as file:
+    elif file_extension == ".csv":
+        with open(file_path, "r", encoding=encoding) as file:
             reader = csv.DictReader(file)
             for row in reader:
                 yield {k: row[k] for k in filter_keys if k in row}

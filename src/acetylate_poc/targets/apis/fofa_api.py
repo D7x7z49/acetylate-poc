@@ -17,6 +17,7 @@ from acetylate_poc.utils.validators import validate_api_key, validate_api_versio
 
 str_to_base64 = GeneralToolsBox.base64_str
 
+
 class FofaAPI:
     """
     FofaAPI class to interact with the Fofa service.
@@ -43,7 +44,7 @@ class FofaAPI:
         Raises:
             ValueError: If the API key or API version is invalid.
         """
-        
+
         self.api_key = validate_api_key(api_key)
         self.api_version = validate_api_version(api_version, self.VALID_API_VERSIONS)
         self.requester = requester
@@ -60,9 +61,11 @@ class FofaAPI:
         Returns:
             dict: The response from the Fofa API.
         """
+
         @api_request_handler(self.requester)
         def func():
             return BaseAPI(method=method, url=url, params=params)
+
         return func()
 
     def search_all(self, query: str, page: int, size: int, fields: list[str] = None, full: bool = False) -> dict:
@@ -81,10 +84,35 @@ class FofaAPI:
         """
         # Default fields if none are specified
         default_fields = [
-            "ip", "port", "protocol", "country", "country_name", "region", "city", "longitude", "latitude",
-            "as_number", "as_organization", "host", "domain", "os", "server", "icp", "title", "jarm",
-            "header", "banner", "cert", "base_protocol", "link", "certs_issuer_org", "certs_issuer_cn",
-            "certs_subject_org", "certs_subject_cn", "tls_ja3s", "tls_version"
+            "ip",
+            "port",
+            "protocol",
+            "country",
+            "country_name",
+            "region",
+            "city",
+            "longitude",
+            "latitude",
+            "as_number",
+            "as_organization",
+            "host",
+            "domain",
+            "os",
+            "server",
+            "icp",
+            "title",
+            "jarm",
+            "header",
+            "banner",
+            "cert",
+            "base_protocol",
+            "link",
+            "certs_issuer_org",
+            "certs_issuer_cn",
+            "certs_subject_org",
+            "certs_subject_cn",
+            "tls_ja3s",
+            "tls_version",
         ]
         fields = ",".join(fields) if fields else ",".join(default_fields)
 
@@ -97,7 +125,7 @@ class FofaAPI:
             "fields": fields,
             "page": page,
             "size": size,
-            "full": full
+            "full": full,
         }
 
         return self.send(method=method, url=url, params=params)
@@ -114,8 +142,18 @@ class FofaAPI:
             dict: The response from the Fofa API containing statistics.
         """
         default_fields = [
-            "protocol", "domain", "port", "title", "os", "server", "country",
-            "as_number", "as_organization", "asset_type", "fid", "icp"
+            "protocol",
+            "domain",
+            "port",
+            "title",
+            "os",
+            "server",
+            "country",
+            "as_number",
+            "as_organization",
+            "asset_type",
+            "fid",
+            "icp",
         ]
 
         fields = ",".join(fields) if fields else ",".join(default_fields)
@@ -123,11 +161,7 @@ class FofaAPI:
         method = "GET"
         url = f"{self.base_url}/api/{self.api_version}/search/stats"
 
-        params = {
-            "key": self.api_key,
-            "qbase64": str_to_base64(query),
-            "fields": fields
-        }
+        params = {"key": self.api_key, "qbase64": str_to_base64(query), "fields": fields}
 
         return self.send(method=method, url=url, params=params)
 
@@ -145,10 +179,7 @@ class FofaAPI:
         method = "GET"
         url = f"{self.base_url}/api/{self.api_version}/host/{host}"
 
-        params = {
-            "key": self.api_key,
-            "detail": detail
-        }
+        params = {"key": self.api_key, "detail": detail}
 
         return self.send(method=method, url=url, params=params)
 
@@ -162,9 +193,7 @@ class FofaAPI:
         method = "GET"
         url = f"{self.base_url}/api/{self.api_version}/info/my"
 
-        params = {
-            "key": self.api_key
-        }
+        params = {"key": self.api_key}
 
         return self.send(method=method, url=url, params=params)
 
@@ -185,10 +214,35 @@ class FofaAPI:
             dict: The response from the Fofa API containing the next page of search results.
         """
         default_fields = [
-            "ip", "port", "protocol", "country", "country_name", "region", "city", "longitude", "latitude",
-            "as_number", "as_organization", "host", "domain", "os", "server", "icp", "title", "jarm",
-            "header", "banner", "cert", "base_protocol", "link", "certs_issuer_org", "certs_issuer_cn",
-            "certs_subject_org", "certs_subject_cn", "tls_ja3s", "tls_version"
+            "ip",
+            "port",
+            "protocol",
+            "country",
+            "country_name",
+            "region",
+            "city",
+            "longitude",
+            "latitude",
+            "as_number",
+            "as_organization",
+            "host",
+            "domain",
+            "os",
+            "server",
+            "icp",
+            "title",
+            "jarm",
+            "header",
+            "banner",
+            "cert",
+            "base_protocol",
+            "link",
+            "certs_issuer_org",
+            "certs_issuer_cn",
+            "certs_subject_org",
+            "certs_subject_cn",
+            "tls_ja3s",
+            "tls_version",
         ]
 
         fields = ",".join(fields) if fields else ",".join(default_fields)
@@ -202,7 +256,7 @@ class FofaAPI:
             "fields": fields,
             "size": size,
             "next": next_id,
-            "full": full
+            "full": full,
         }
 
         return self.send(method=method, url=url, params=params)

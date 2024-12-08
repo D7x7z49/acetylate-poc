@@ -34,15 +34,10 @@ class IpinfoAPI:
         Returns:
             dict: A dictionary containing details about the IP address such as city, region, country, ASN, etc.
         """
+
         @api_request_handler(self.requester)
         def func():
-            return BaseAPI(
-                method="GET",
-                url=f"{self.base_url}/{ip}/json",
-                params={
-                    "token": self.tonken
-                }
-            )
+            return BaseAPI(method="GET", url=f"{self.base_url}/{ip}/json", params={"token": self.tonken})
 
         return func()
 
@@ -57,8 +52,19 @@ class HostAPI:
 
     base_url = r"https://host.io"
     SUPPORTED_FIELDS = {
-        "ip", "ns", "mx", "asn", "backlinks", "redirects", "adsense",
-        "facebook", "twitter", "instagram", "gtm", "googleanalytics", "email"
+        "ip",
+        "ns",
+        "mx",
+        "asn",
+        "backlinks",
+        "redirects",
+        "adsense",
+        "facebook",
+        "twitter",
+        "instagram",
+        "gtm",
+        "googleanalytics",
+        "email",
     }
 
     def __init__(self, tonken: str, limit: int = 5, page: int = 0, requester: str = "requests") -> None:
@@ -89,16 +95,13 @@ class HostAPI:
         Returns:
             dict: A dictionary containing web-related details about the host.
         """
+
         @api_request_handler(self.requester)
         def func():
             return BaseAPI(
                 method="GET",
                 url=f"{self.base_url}/api/web/{host}",
-                params={
-                    "token": self.tonken,
-                    "limit": self.limit,
-                    "page": self.page
-                }
+                params={"token": self.tonken, "limit": self.limit, "page": self.page},
             )
 
         return func()
@@ -116,16 +119,13 @@ class HostAPI:
         Returns:
             dict: A dictionary containing DNS records related to the host.
         """
+
         @api_request_handler(self.requester)
         def func():
             return BaseAPI(
                 method="GET",
                 url=f"{self.base_url}/api/dns/{host}",
-                params={
-                    "token": self.tonken,
-                    "limit": self.limit,
-                    "page": self.page
-                }
+                params={"token": self.tonken, "limit": self.limit, "page": self.page},
             )
 
         return func()
@@ -143,16 +143,13 @@ class HostAPI:
         Returns:
             dict: A dictionary containing related domains for the given host.
         """
+
         @api_request_handler(self.requester)
         def func():
             return BaseAPI(
                 method="GET",
                 url=f"{self.base_url}/api/related/{host}",
-                params={
-                    "token": self.tonken,
-                    "limit": self.limit,
-                    "page": self.page
-                }
+                params={"token": self.tonken, "limit": self.limit, "page": self.page},
             )
 
         return func()
@@ -170,16 +167,13 @@ class HostAPI:
         Returns:
             dict: A dictionary containing full information about the host.
         """
+
         @api_request_handler(self.requester)
         def func():
             return BaseAPI(
                 method="GET",
                 url=f"{self.base_url}/api/full/{host}",
-                params={
-                    "token": self.tonken,
-                    "limit": self.limit,
-                    "page": self.page
-                }
+                params={"token": self.tonken, "limit": self.limit, "page": self.page},
             )
 
         return func()
@@ -188,9 +182,9 @@ class HostAPI:
         """
         Retrieve domains associated with a specific field and value.
 
-        This method makes a GET request to host.io to retrieve domains associated with 
-        the specified field (e.g., IP address, ASN, backlinks) and the corresponding value. 
-        Supported fields are: 
+        This method makes a GET request to host.io to retrieve domains associated with
+        the specified field (e.g., IP address, ASN, backlinks) and the corresponding value.
+        Supported fields are:
             ip, ns, mx, asn, backlinks, redirects, adsense, facebook, twitter, instagram, gtm, googleanalytics, email.
 
         Args:
@@ -213,11 +207,7 @@ class HostAPI:
             return BaseAPI(
                 method="GET",
                 url=f"{self.base_url}/api/domains/{field}/{value}",
-                params={
-                    "token": self.tonken,
-                    "limit": self.limit,
-                    "page": self.page
-                }
+                params={"token": self.tonken, "limit": self.limit, "page": self.page},
             )
 
         return func()
